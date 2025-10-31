@@ -8,7 +8,7 @@ _db_path = None
 
 def init_pool() -> None:
 	global _db_path
-	root = Path(__file__).resolve().parents[1]
+	root = Path(__file__).resolve().parents[2]
 	_db_path = os.getenv("SQLITE_PATH", str(root / "datasight.db"))
 	Path(_db_path).parent.mkdir(parents=True, exist_ok=True)
 

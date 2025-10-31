@@ -6,9 +6,8 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[2]
 price_csv = root / "sample_data" / "aemo_price_daily.csv"
 demand_csv = root / "sample_data" / "aemo_demand_daily.csv"
-db_path = os.getenv("SQLITE_PATH", str(root / "backend" / ".." / "datasight.db"))
+db_path = os.getenv("SQLITE_PATH", str(root / "datasight.db"))
 
-db_path = str(Path(db_path).resolve())
 conn = sqlite3.connect(db_path)
 cur = conn.cursor()
 
