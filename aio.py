@@ -7,6 +7,22 @@ import urllib.request
 import os
 
 
+def load_env():
+	"""Load environment variables from .env file"""
+	env_path = Path(".env")
+	if not env_path.exists():
+		return
+	with open(env_path) as f:
+		for line in f:
+			line = line.strip()
+			if line and not line.startswith("#"):
+				key, _, value = line.partition("=")
+				key = key.strip()
+				value = value.strip().strip('"').strip("'")
+				if key and value and key not in os.environ:
+					os.environ[key] = value
+
+
 def run(cmd, cwd=None, env=None):
 	return subprocess.run(cmd, cwd=cwd, env=env, check=True)
 
@@ -29,9 +45,16 @@ def wait_http(url, timeout=60.0, interval=1.0):
 
 
 def up(root: Path, build: bool, no_frontend: bool, frontend_port: int, backend_port: int, reload: bool):
+	# Load .env first
+	load_env()
 	backend = root / "backend"
 	frontend = root / "frontend"
 	env = os.environ.copy()
+	# Set FRONTEND_ORIGIN for CORS
+	env["FRONTEND_ORIGIN"] = f"http://localhost:{frontend_port}"
+	# Ensure DATABASE_URL is set
+	if "DATABASE_URL" not in env:
+		env["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/datasight"
 	if build:
 		run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], cwd=str(backend))
 	run([sys.executable, "init_db.py"], cwd=str(backend), env=env)
