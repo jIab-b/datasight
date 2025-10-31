@@ -1,0 +1,9 @@
+
+*.sql
+*.db
+sample_data/
+frontend/.svelte-kit
+node_modules/
+package-lock.json
+__pycache__/
+venv/
