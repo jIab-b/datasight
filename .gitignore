@@ -1,4 +1,4 @@
-
+.env
 *.sql
 *.db
 sample_data/
